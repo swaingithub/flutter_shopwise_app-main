@@ -1,4 +1,4 @@
-const { createCustomer, loginCustomer, renewCustomerToken, logoutCustomer } = require('../services/authService');
+const { createCustomer, loginCustomer, renewCustomerToken, logoutCustomer, recoverCustomer } = require('../services/authService');
 
 
 // POST /create-customer
@@ -70,6 +70,26 @@ exports.logoutUser = async (req, res) => {
     } else {
       res.status(401).json({ error: 'Logout failed' });
     }
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+// POST /forgot-password
+exports.forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  if (!email) {
+    return res.status(400).json({ error: 'Email is required' });
+  }
+  try {
+    const data = await recoverCustomer(email);
+    const recoverData = data?.data?.customerRecover;
+
+    if (recoverData?.customerUserErrors?.length > 0) {
+      return res.status(400).json({ error: recoverData.customerUserErrors[0].message });
+    }
+
+    res.json({ success: true, message: 'Password recovery email sent' });
   } catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });
   }

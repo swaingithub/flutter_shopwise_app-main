@@ -106,6 +106,29 @@ async function logoutCustomer(customerAccessToken) {
   return response.data;
 }
 
-module.exports = { createCustomer, loginCustomer, renewCustomerToken, logoutCustomer };
+// Send a password reset email
+async function recoverCustomer(email) {
+  const mutation = `
+    mutation customerRecover($email: String!) {
+      customerRecover(email: $email) {
+        customerUserErrors {
+          code
+          field
+          message
+        }
+      }
+    }
+  `;
+
+  const response = await axios.post(
+    shopifyEndpoint,
+    { query: mutation, variables: { email } },
+    { headers: shopifyHeaders }
+  );
+
+  return response.data;
+}
+
+module.exports = { createCustomer, loginCustomer, renewCustomerToken, logoutCustomer, recoverCustomer };
 
 

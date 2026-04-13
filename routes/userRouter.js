@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
 
-const { createUser, loginUser } = require('../controller/authController');
+const { createUser, loginUser, forgotPassword } = require('../controller/authController');
 const { getCustomerDetails, getCustomerOrders } = require('../controller/customerController');
 const { getCollection, getAllProducts, searchProduct } = require('../controller/productController');
 
 // Auth routes
 router.post('/create-customer', createUser);
 router.post('/user-login', loginUser);
+router.post('/forgot-password', forgotPassword);
 
 // Customer routes
 router.post('/get-customer-details', getCustomerDetails);
